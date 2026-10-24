@@ -1,0 +1,6 @@
+
+/* Global reset and defaults are defined in App.css. */
+#root {
+  min-height: 100vh;
+  width: 100%;
+}
