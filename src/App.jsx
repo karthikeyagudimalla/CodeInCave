@@ -345,9 +345,7 @@ function App() {
   const [islandOpen, setIslandOpen] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState("Let's discuss");
   const [briefStatus, setBriefStatus] = useState("");
-  const [briefSubmitting, setBriefSubmitting] = useState(false);
   const [briefFallbackHref, setBriefFallbackHref] = useState("");
-  const [briefConfirmationOpen, setBriefConfirmationOpen] = useState(false);
   const islandRef = useRef(null);
   const manifestoHeadingRef = useRef(null);
   const demo = demos[activeDemo];
@@ -381,9 +379,8 @@ function App() {
     };
   }, []);
 
-  const handleBriefSubmit = async (event) => {
+  const handleBriefSubmit = (event) => {
     event.preventDefault();
-    const formElement = event.currentTarget;
     const form = new FormData(event.currentTarget);
     const briefDetails = {
       name: form.get("name"),
@@ -393,34 +390,14 @@ function App() {
       project: form.get("project"),
       website: form.get("website"),
     };
+    if (briefDetails.website) return;
+
     const mailSubject = `Project brief from ${briefDetails.name}`;
     const mailBody = `Name: ${briefDetails.name}\nEmail: ${briefDetails.email}\nCompany / project: ${briefDetails.company || "Not provided"}\nBudget range: ${briefDetails.budget}\n\nProject details:\n${briefDetails.project}`;
-    const fallbackHref = `mailto:ngrethesh@gmail.com?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
-    setBriefSubmitting(true);
-    setBriefFallbackHref("");
-    setBriefStatus("Sending your brief securely…");
-    try {
-      const response = await fetch("/api/brief", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(briefDetails),
-      });
-      const result = await response.json().catch(() => ({}));
-      if (!response.ok || result.ok !== true) {
-        throw new Error(result.error || "We couldn't send your brief. Please try again.");
-      }
-
-      formElement.reset();
-      setSelectedBudget("Let's discuss");
-      setBriefStatus("Your brief was sent successfully.");
-      setBriefFallbackHref("");
-      setBriefConfirmationOpen(true);
-    } catch (error) {
-      setBriefStatus(error.message || "We couldn't send your brief. Please try again.");
-      setBriefFallbackHref(fallbackHref);
-    } finally {
-      setBriefSubmitting(false);
-    }
+    const draftHref = `mailto:ngrethesh@gmail.com?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
+    setBriefFallbackHref(draftHref);
+    setBriefStatus("Your email draft is ready. Review the details in your mail app and tap Send to submit your brief.");
+    window.location.href = draftHref;
   };
 
   useEffect(() => {
@@ -619,7 +596,7 @@ function App() {
         <div className="faq-list reveal">{faqs.map((faq, index) => { const isOpen = openFaq === index; return <article className={isOpen ? "faq-item is-open" : "faq-item"} key={faq.question}><button type="button" aria-expanded={isOpen} onClick={() => setOpenFaq(isOpen ? null : index)}><span className="faq-number">0{index + 1}</span><b>{faq.question}</b><i>{isOpen ? "−" : "+"}</i></button><div className="faq-answer" aria-hidden={!isOpen} inert={!isOpen}><p>{faq.answer}</p></div></article>; })}</div>
       </section>
       <div className="contact-marquee" aria-label="Ideas into reality, digital solutions built around your business"><div className="contact-marquee-track">{[0, 1, 2, 3].map((copy) => <div className="contact-marquee-group" aria-hidden={copy !== 0} key={copy}><span>IDEAS INTO REALITY</span><i>✳</i><span>WEB · SOFTWARE · AI</span><i>✳</i><span>BUILT AROUND YOUR BUSINESS</span><i>✳</i><span>CODEINCAVE DIGITAL SOLUTIONS</span><i>✳</i></div>)}</div></div>
-      <section className="contact" id="contact"><div className="contact-orb contact-orb-one" /><div className="contact-orb contact-orb-two" /><div className="contact-inner section-pad reveal"><div className="eyebrow"><span className="eyebrow-dash" /> LET'S BUILD WHAT'S NEXT</div><div className="contact-layout"><h2>Bring your idea.<br />We'll build the <span>future.</span></h2><div className="contact-copy"><p>From a stronger digital presence to software that streamlines your business, let's turn your next idea into something real.</p><span className="contact-email">PREFER EMAIL? <a href="mailto:ngrethesh@gmail.com">KARTHIKEYAGUDIMALLA2007@GMAIL.COM</a></span></div></div>
+      <section className="contact" id="contact"><div className="contact-orb contact-orb-one" /><div className="contact-orb contact-orb-two" /><div className="contact-inner section-pad reveal"><div className="eyebrow"><span className="eyebrow-dash" /> LET'S BUILD WHAT'S NEXT</div><div className="contact-layout"><h2>Bring your idea.<br />We'll build the <span>future.</span></h2><div className="contact-copy"><p>From a stronger digital presence to software that streamlines your business, let's turn your next idea into something real.</p><span className="contact-email">PREFER EMAIL? <a href="mailto:ngrethesh@gmail.com">NGRETHESH@GMAIL.COM</a></span></div></div>
         <form className="brief-form" onSubmit={handleBriefSubmit}>
           <div className="brief-form-heading"><div><span className="brief-kicker">PROJECT INQUIRY / 001</span><h3>Send us a brief</h3></div><p>Tell us about your project. We'll get back to you as soon as we can.</p></div>
           <div className="brief-fields">
@@ -629,10 +606,9 @@ function App() {
             <label className="brief-field brief-field-full"><span>Company / project name</span><input name="company" autoComplete="organization" placeholder="Your startup / company" /></label>
             <fieldset className="brief-budget brief-field-full"><legend>Budget range</legend><div>{["Under ₹50K", "₹50K – ₹1L", "₹1L – ₹3L", "₹3L+", "Let's discuss"].map((budget) => <button type="button" className={selectedBudget === budget ? "is-selected" : ""} aria-pressed={selectedBudget === budget} onClick={() => setSelectedBudget(budget)} key={budget}>{budget}</button>)}</div></fieldset>
             <label className="brief-field brief-field-full"><span>Tell us about your project <i>*</i></span><textarea name="project" rows="5" placeholder="What are you building? What problem needs to be solved? What's your timeline?" required /></label>
-            <div className="brief-submit brief-field-full"><button type="submit" className="brief-submit-button" disabled={briefSubmitting} data-cursor="SEND PROJECT BRIEF">{briefSubmitting ? "Sending brief…" : "Send project brief"} <span>{briefSubmitting ? "···" : "↗"}</span></button><p>Your brief is sent securely to the CodeInCave team.</p>{briefStatus && <p className="brief-status" role="status">{briefStatus}</p>}{briefFallbackHref && <a className="brief-fallback" href={briefFallbackHref}>Open an email draft with these details <span>↗</span></a>}</div>
+            <div className="brief-submit brief-field-full"><button type="submit" className="brief-submit-button" data-cursor="PREPARE EMAIL">Continue in email <span>↗</span></button><p>Your mail app will open with the details filled in. Review them and tap Send to submit your brief.</p>{briefStatus && <p className="brief-status" role="status">{briefStatus}</p>}{briefFallbackHref && <a className="brief-fallback" href={briefFallbackHref}>Mail app didn’t open? Open your email draft <span>↗</span></a>}</div>
           </div>
         </form>
-        {briefConfirmationOpen && <div className="brief-confirmation-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setBriefConfirmationOpen(false); }}><section className="brief-confirmation" role="dialog" aria-modal="true" aria-labelledby="brief-confirmation-title"><button className="brief-confirmation-close" type="button" aria-label="Close confirmation" onClick={() => setBriefConfirmationOpen(false)}>×</button><span className="brief-confirmation-icon">✓</span><span className="brief-kicker">PROJECT BRIEF / SENT</span><h3 id="brief-confirmation-title">Thank you for reaching out.</h3><p>Your project brief was sent successfully to <b>ngrethesh@gmail.com</b>. The CodeInCave team will be in touch.</p><button className="brief-confirmation-action" type="button" onClick={() => setBriefConfirmationOpen(false)}>Got it <span>↗</span></button></section></div>}
         <footer className="contact-footer">
           <div className="footer-main">
             <div className="footer-about"><a className="brand footer-brand" href="#top" aria-label="CodeInCave home"><span className="brand-symbol"><i /><i /><i /></span><span>code<span>in</span>cave<span className="brand-period">.</span></span></a><p>CodeInCave is a digital solutions company building thoughtful websites, custom software, AI-powered applications, and scalable products for real-world challenges.</p></div>
