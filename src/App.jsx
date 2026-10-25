@@ -411,10 +411,10 @@ function App() {
       "Best,",
       briefDetails.name,
     ].join("\n");
-    const draftHref = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent("ngrethesh@gmail.com")}&su=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
+    const draftHref = `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=${encodeURIComponent("ngrethesh@gmail.com")}&su=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
     setBriefFallbackHref(draftHref);
     setBriefStatus("Your Gmail draft is ready. Review the details and tap Send to submit your brief.");
-    window.open(draftHref, "_blank", "noopener,noreferrer");
+    window.location.assign(draftHref);
   };
 
   useEffect(() => {
