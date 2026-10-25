@@ -392,8 +392,25 @@ function App() {
     };
     if (briefDetails.website) return;
 
-    const mailSubject = `Project brief from ${briefDetails.name}`;
-    const mailBody = `Name: ${briefDetails.name}\nEmail: ${briefDetails.email}\nCompany / project: ${briefDetails.company || "Not provided"}\nBudget range: ${briefDetails.budget}\n\nProject details:\n${briefDetails.project}`;
+    const mailSubject = `New project inquiry from ${briefDetails.name}`;
+    const mailBody = [
+      "Hello CodeInCave team,",
+      "",
+      "I'd like to discuss a project with you. Here are my details:",
+      "",
+      `Name: ${briefDetails.name}`,
+      `Email: ${briefDetails.email}`,
+      `Company / project: ${briefDetails.company || "Not provided"}`,
+      `Budget range: ${briefDetails.budget}`,
+      "",
+      "Project brief:",
+      briefDetails.project,
+      "",
+      "I look forward to hearing from you.",
+      "",
+      "Best,",
+      briefDetails.name,
+    ].join("\n");
     const draftHref = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent("ngrethesh@gmail.com")}&su=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
     setBriefFallbackHref(draftHref);
     setBriefStatus("Your Gmail draft is ready. Review the details and tap Send to submit your brief.");
