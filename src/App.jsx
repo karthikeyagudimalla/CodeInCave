@@ -411,10 +411,33 @@ function App() {
       "Best,",
       briefDetails.name,
     ].join("\n");
-    const draftHref = `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=${encodeURIComponent("ngrethesh@gmail.com")}&su=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
+    const recipient = "ngrethesh@gmail.com";
+    const encodedSubject = encodeURIComponent(mailSubject);
+    const encodedBody = encodeURIComponent(mailBody);
+    const draftHref = `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=${encodeURIComponent(recipient)}&su=${encodedSubject}&body=${encodedBody}`;
     setBriefFallbackHref(draftHref);
-    setBriefStatus("Your Gmail draft is ready. Review the details and tap Send to submit your brief.");
-    window.location.assign(draftHref);
+    setBriefStatus("Your email draft is ready. Review the details and tap Send to submit your brief.");
+
+    const userAgent = navigator.userAgent;
+    const isIOS = /iPhone|iPad|iPod/i.test(userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    const isAndroid = /Android/i.test(userAgent);
+
+    if (isIOS) {
+      let gmailAppOpened = false;
+      const trackAppLaunch = () => {
+        if (document.hidden) gmailAppOpened = true;
+      };
+      document.addEventListener("visibilitychange", trackAppLaunch);
+      window.location.href = `googlegmail:///co?to=${encodeURIComponent(recipient)}&subject=${encodedSubject}&body=${encodedBody}`;
+      window.setTimeout(() => {
+        document.removeEventListener("visibilitychange", trackAppLaunch);
+        if (!gmailAppOpened && !document.hidden) window.location.assign(draftHref);
+      }, 1200);
+    } else if (isAndroid) {
+      window.location.href = `intent://${encodeURIComponent(recipient)}?subject=${encodedSubject}&body=${encodedBody}#Intent;scheme=mailto;package=com.google.android.gm;S.browser_fallback_url=${encodeURIComponent(draftHref)};end`;
+    } else {
+      window.location.assign(draftHref);
+    }
   };
 
   useEffect(() => {
