@@ -346,6 +346,7 @@ function App() {
   const [selectedBudget, setSelectedBudget] = useState("Let's discuss");
   const [briefStatus, setBriefStatus] = useState("");
   const [briefSubmitting, setBriefSubmitting] = useState(false);
+  const [briefFallbackHref, setBriefFallbackHref] = useState("");
   const [briefConfirmationOpen, setBriefConfirmationOpen] = useState(false);
   const islandRef = useRef(null);
   const manifestoHeadingRef = useRef(null);
@@ -384,20 +385,25 @@ function App() {
     event.preventDefault();
     const formElement = event.currentTarget;
     const form = new FormData(event.currentTarget);
+    const briefDetails = {
+      name: form.get("name"),
+      email: form.get("email"),
+      company: form.get("company"),
+      budget: selectedBudget,
+      project: form.get("project"),
+      website: form.get("website"),
+    };
+    const mailSubject = `Project brief from ${briefDetails.name}`;
+    const mailBody = `Name: ${briefDetails.name}\nEmail: ${briefDetails.email}\nCompany / project: ${briefDetails.company || "Not provided"}\nBudget range: ${briefDetails.budget}\n\nProject details:\n${briefDetails.project}`;
+    const fallbackHref = `mailto:ngrethesh@gmail.com?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
     setBriefSubmitting(true);
+    setBriefFallbackHref("");
     setBriefStatus("Sending your brief securely…");
     try {
       const response = await fetch("/api/brief", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.get("name"),
-          email: form.get("email"),
-          company: form.get("company"),
-          budget: selectedBudget,
-          project: form.get("project"),
-          website: form.get("website"),
-        }),
+        body: JSON.stringify(briefDetails),
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok || result.ok !== true) {
@@ -407,9 +413,11 @@ function App() {
       formElement.reset();
       setSelectedBudget("Let's discuss");
       setBriefStatus("Your brief was sent successfully.");
+      setBriefFallbackHref("");
       setBriefConfirmationOpen(true);
     } catch (error) {
       setBriefStatus(error.message || "We couldn't send your brief. Please try again.");
+      setBriefFallbackHref(fallbackHref);
     } finally {
       setBriefSubmitting(false);
     }
@@ -621,7 +629,7 @@ function App() {
             <label className="brief-field brief-field-full"><span>Company / project name</span><input name="company" autoComplete="organization" placeholder="Your startup / company" /></label>
             <fieldset className="brief-budget brief-field-full"><legend>Budget range</legend><div>{["Under ₹50K", "₹50K – ₹1L", "₹1L – ₹3L", "₹3L+", "Let's discuss"].map((budget) => <button type="button" className={selectedBudget === budget ? "is-selected" : ""} aria-pressed={selectedBudget === budget} onClick={() => setSelectedBudget(budget)} key={budget}>{budget}</button>)}</div></fieldset>
             <label className="brief-field brief-field-full"><span>Tell us about your project <i>*</i></span><textarea name="project" rows="5" placeholder="What are you building? What problem needs to be solved? What's your timeline?" required /></label>
-            <div className="brief-submit brief-field-full"><button type="submit" className="brief-submit-button" disabled={briefSubmitting} data-cursor="SEND PROJECT BRIEF">{briefSubmitting ? "Sending brief…" : "Send project brief"} <span>{briefSubmitting ? "···" : "↗"}</span></button><p>Your brief is sent securely to the CodeInCave team.</p>{briefStatus && <p className="brief-status" role="status">{briefStatus}</p>}</div>
+            <div className="brief-submit brief-field-full"><button type="submit" className="brief-submit-button" disabled={briefSubmitting} data-cursor="SEND PROJECT BRIEF">{briefSubmitting ? "Sending brief…" : "Send project brief"} <span>{briefSubmitting ? "···" : "↗"}</span></button><p>Your brief is sent securely to the CodeInCave team.</p>{briefStatus && <p className="brief-status" role="status">{briefStatus}</p>}{briefFallbackHref && <a className="brief-fallback" href={briefFallbackHref}>Open an email draft with these details <span>↗</span></a>}</div>
           </div>
         </form>
         {briefConfirmationOpen && <div className="brief-confirmation-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setBriefConfirmationOpen(false); }}><section className="brief-confirmation" role="dialog" aria-modal="true" aria-labelledby="brief-confirmation-title"><button className="brief-confirmation-close" type="button" aria-label="Close confirmation" onClick={() => setBriefConfirmationOpen(false)}>×</button><span className="brief-confirmation-icon">✓</span><span className="brief-kicker">PROJECT BRIEF / SENT</span><h3 id="brief-confirmation-title">Thank you for reaching out.</h3><p>Your project brief was sent successfully to <b>ngrethesh@gmail.com</b>. The CodeInCave team will be in touch.</p><button className="brief-confirmation-action" type="button" onClick={() => setBriefConfirmationOpen(false)}>Got it <span>↗</span></button></section></div>}
