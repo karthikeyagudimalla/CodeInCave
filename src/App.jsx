@@ -4,9 +4,9 @@ import { Edges } from "@react-three/drei";
 import "./App.css";
 
 const services = [
-  { id: "01", title: "Custom websites", category: "WEB DESIGN & DEVELOPMENT", short: "Professional, memorable websites that give your business a stronger digital presence.", detail: "We turn your ideas into fast, responsive websites shaped around your brand, your audience, and the goals that matter to your business.", tags: ["Web design", "Web development", "Digital presence"], symbol: "orbit" },
-  { id: "02", title: "Apps", category: "AI-POWERED APPLICATIONS", short: "Thoughtful applications that make everyday work simpler and more useful.", detail: "From business apps to AI-powered experiences, we build practical products around real needs—with intuitive flows, reliable engineering, and room to scale.", tags: ["AI applications", "Business apps", "Scalable products"], symbol: "spark" },
-  { id: "03", title: "Custom software", category: "SOFTWARE SOLUTIONS", short: "Purpose-built software that solves real challenges and fits your business.", detail: "We engineer reliable, efficient software around the way your team works—helping streamline operations, connect systems, and create space to grow.", tags: ["Business software", "Workflow tools", "Integrations"], symbol: "stack" },
+  { id: "01", title: "Custom websites", category: "WEB DESIGN & DEVELOPMENT", short: "Professional, memorable websites that give your business a stronger digital presence.", detail: "We turn your ideas into fast, responsive websites shaped around your brand, your audience, and the goals that matter to your business.", tags: ["Web design", "Web development", "Digital presence"], symbol: "browser" },
+  { id: "02", title: "Apps", category: "AI-POWERED APPLICATIONS", short: "Thoughtful applications that make everyday work simpler and more useful.", detail: "From business apps to AI-powered experiences, we build practical products around real needs—with intuitive flows, reliable engineering, and room to scale.", tags: ["AI applications", "Business apps", "Scalable products"], symbol: "app" },
+  { id: "03", title: "Custom software", category: "SOFTWARE SOLUTIONS", short: "Purpose-built software that solves real challenges and fits your business.", detail: "We engineer reliable, efficient software around the way your team works—helping streamline operations, connect systems, and create space to grow.", tags: ["Business software", "Workflow tools", "Integrations"], symbol: "code" },
 ];
 
 const demos = {
@@ -223,24 +223,49 @@ function PointerHalo() {
     const finePointer = window.matchMedia("(pointer: fine)").matches;
     if (!node || !finePointer) return;
     document.documentElement.classList.add("custom-cursor");
+    let activeTextElement = null;
+    const releaseTextElement = () => {
+      if (!activeTextElement) return;
+      const previousTextElement = activeTextElement;
+      previousTextElement.classList.remove("cursor-text-active");
+      previousTextElement.classList.add("cursor-text-returning");
+      window.setTimeout(() => previousTextElement.classList.remove("cursor-text-returning"), 220);
+      activeTextElement = null;
+    };
 
     const move = (event) => {
       node.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
       node.classList.add("is-active");
       document.documentElement.style.setProperty("--pointer-x", `${event.clientX}px`);
       document.documentElement.style.setProperty("--pointer-y", `${event.clientY}px`);
+      const hoveredElement = document.elementFromPoint(event.clientX, event.clientY);
+      const textElement = hoveredElement?.closest?.("h1,h2,h3,h4,p,a,button,li,label,b,strong,em,span,small");
+      const hasText = textElement?.textContent?.trim();
+      const nextTextElement = hasText ? textElement : null;
+      if (nextTextElement !== activeTextElement) {
+        releaseTextElement();
+        activeTextElement = nextTextElement;
+        activeTextElement?.classList.remove("cursor-text-returning");
+        activeTextElement?.classList.add("cursor-text-active");
+      }
     };
     const over = (event) => {
       const target = event.target.closest?.("[data-cursor]");
       node.dataset.label = target?.dataset.cursor || "";
       node.classList.toggle("is-over", Boolean(target));
     };
+    const leave = () => {
+      releaseTextElement();
+    };
 
     window.addEventListener("pointermove", move, { passive: true });
     window.addEventListener("pointerover", over, { passive: true });
+    window.addEventListener("pointerleave", leave);
     return () => {
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerover", over);
+      window.removeEventListener("pointerleave", leave);
+      activeTextElement?.classList.remove("cursor-text-active");
       document.documentElement.classList.remove("custom-cursor");
     };
   }, []);
@@ -320,7 +345,10 @@ function App() {
   const [islandOpen, setIslandOpen] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState("Let's discuss");
   const [briefStatus, setBriefStatus] = useState("");
+  const [briefSubmitting, setBriefSubmitting] = useState(false);
+  const [briefConfirmationOpen, setBriefConfirmationOpen] = useState(false);
   const islandRef = useRef(null);
+  const manifestoHeadingRef = useRef(null);
   const demo = demos[activeDemo];
 
   useEffect(() => {
@@ -338,17 +366,53 @@ function App() {
     };
   }, []);
 
-  const handleBriefSubmit = (event) => {
+  useEffect(() => {
+    const previousScrollRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+    if (window.location.hash) {
+      window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+    }
+    window.scrollTo(0, 0);
+    const resetAtPaint = window.requestAnimationFrame(() => window.scrollTo(0, 0));
+    return () => {
+      window.cancelAnimationFrame(resetAtPaint);
+      window.history.scrollRestoration = previousScrollRestoration;
+    };
+  }, []);
+
+  const handleBriefSubmit = async (event) => {
     event.preventDefault();
+    const formElement = event.currentTarget;
     const form = new FormData(event.currentTarget);
-    const name = form.get("name");
-    const email = form.get("email");
-    const company = form.get("company") || "Not provided";
-    const project = form.get("project");
-    const subject = `Project brief from ${name}`;
-    const body = `Name: ${name}\nEmail: ${email}\nCompany / project: ${company}\nBudget range: ${selectedBudget}\n\nProject brief:\n${project}`;
-    setBriefStatus("Your email app is opening with the project brief ready to send.");
-    window.location.href = `mailto:hello@codeincave.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setBriefSubmitting(true);
+    setBriefStatus("Sending your brief securely…");
+    try {
+      const response = await fetch("/api/brief", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.get("name"),
+          email: form.get("email"),
+          company: form.get("company"),
+          budget: selectedBudget,
+          project: form.get("project"),
+          website: form.get("website"),
+        }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || result.ok !== true) {
+        throw new Error(result.error || "We couldn't send your brief. Please try again.");
+      }
+
+      formElement.reset();
+      setSelectedBudget("Let's discuss");
+      setBriefStatus("Your brief was sent successfully.");
+      setBriefConfirmationOpen(true);
+    } catch (error) {
+      setBriefStatus(error.message || "We couldn't send your brief. Please try again.");
+    } finally {
+      setBriefSubmitting(false);
+    }
   };
 
   useEffect(() => {
@@ -367,7 +431,7 @@ function App() {
       const root = document.documentElement;
       const maxScroll = root.scrollHeight - window.innerHeight;
       root.style.setProperty("--scroll-progress", `${maxScroll > 0 ? (window.scrollY / maxScroll) * 100 : 0}%`);
-      const sections = ["top", "services", "approach", "process", "work", "faq", "contact"];
+      const sections = ["top", "services", "why-us", "approach", "process", "work", "faq", "contact"];
       const active = [...sections].reverse().find((id) => document.getElementById(id)?.getBoundingClientRect().top <= window.innerHeight * 0.42);
       document.querySelectorAll(".navigation a[href^=\"#\"]").forEach((link) => {
         const selected = link.getAttribute("href") === `#${active}`;
@@ -385,19 +449,62 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const heading = manifestoHeadingRef.current;
+    if (!heading || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const duration = 900;
+    const animations = [...heading.querySelectorAll(".manifesto-word")].map((word, index) => {
+      const scatterX = ((index * 53) % 161) - 80;
+      const scatterY = ((index * 37) % 111) - 55;
+      const scatterZ = 28 + ((index * 19) % 60);
+      const rotation = ((index * 29) % 41) - 20;
+      const animation = word.animate([
+        { opacity: 0, filter: "blur(7px)", transform: `translate3d(${scatterX}px, ${scatterY}px, ${scatterZ}px) rotate(${rotation}deg) scale(.82)` },
+        { opacity: 1, filter: "blur(0px)", transform: "translate3d(0, 0, 0) rotate(0deg) scale(1)" },
+      ], { duration, fill: "both", easing: "cubic-bezier(.2,.7,.2,1)" });
+      animation.pause();
+      return animation;
+    });
+
+    let frame = 0;
+    const updateAssembly = () => {
+      frame = 0;
+      const bounds = heading.getBoundingClientRect();
+      const sentenceCenter = bounds.top + bounds.height / 2;
+      const viewportTarget = window.innerHeight * 0.46;
+      const scrollRange = window.innerHeight * 0.62;
+      const progress = Math.max(0, Math.min(1, 1 - Math.abs(sentenceCenter - viewportTarget) / scrollRange));
+      animations.forEach((animation) => { animation.currentTime = progress * duration; });
+    };
+    const scheduleAssembly = () => {
+      if (!frame) frame = window.requestAnimationFrame(updateAssembly);
+    };
+
+    updateAssembly();
+    window.addEventListener("scroll", scheduleAssembly, { passive: true });
+    window.addEventListener("resize", scheduleAssembly);
+    return () => {
+      window.removeEventListener("scroll", scheduleAssembly);
+      window.removeEventListener("resize", scheduleAssembly);
+      if (frame) window.cancelAnimationFrame(frame);
+      animations.forEach((animation) => animation.cancel());
+    };
+  }, []);
+
   return (
     <main className={energized ? "site-shell is-energized" : "site-shell"}>
       <PointerHalo />
       <div className="entrance-screen" aria-hidden="true"><div className="entrance-panel entrance-panel-top" /><div className="entrance-panel entrance-panel-bottom" /><div className="entrance-content"><span className="entrance-kicker">ENGINEERING WHAT'S NEXT <i>·</i> 001</span><div className="entrance-emblem"><i /><i /><i /></div><div className="entrance-wordmark">CODE<span>IN</span>CAVE</div><div className="entrance-progress"><i /></div><span className="entrance-caption">IDEAS INTO REAL-WORLD SOLUTIONS</span></div><span className="entrance-coordinate entrance-coordinate-left">TELANGANA / INDIA</span><span className="entrance-coordinate entrance-coordinate-right">WEB · SOFTWARE · AI</span></div>
       <div className="pointer-light" aria-hidden="true" />
       <div className="scroll-progress" aria-hidden="true" />
-      <div className="topline"><div className="topline-inner"><span><i className="availability-dot" /> BUILDING WHAT'S NEXT</span><div className={`studio-island-wrap${islandOpen ? " is-open" : ""}`} ref={islandRef}><button className="studio-island" type="button" aria-expanded={islandOpen} aria-controls="studio-island-panel" onClick={() => setIslandOpen(!islandOpen)} data-cursor="OPEN STUDIO DASHBOARD"><span className="island-indicator" /><span className="island-label">STUDIO LIVE</span><span className="island-equalizer"><i /><i /><i /><i /></span></button><div className="studio-panel" id="studio-island-panel" aria-hidden={!islandOpen} inert={!islandOpen}><div className="studio-panel-head"><span><i /> CODEINCAVE / STUDIO STATUS</span><button type="button" aria-label="Close dashboard" onClick={() => setIslandOpen(false)}>×</button></div><h2>Ideas into<br /><em>reality.</em></h2><p>Engineering practical digital solutions that help businesses move forward.</p><div className="island-stages"><a href="#services" onClick={() => setIslandOpen(false)}><span>01</span><b>Explore solutions</b><i>↗</i></a><a href="#approach" onClick={() => setIslandOpen(false)}><span>02</span><b>Meet our approach</b><i>↗</i></a><a href="#work" onClick={() => setIslandOpen(false)}><span>03</span><b>See what is possible</b><i>↗</i></a></div><a className="island-cta" href="#contact" onClick={() => setIslandOpen(false)}>START A PROJECT <span>↗</span></a></div></div><a href="mailto:hello@codeincave.com" data-cursor="SAY HELLO">LET'S TALK <b>↗</b></a></div></div>
+      <div className="topline"><div className="topline-inner"><span><i className="availability-dot" /> BUILDING WHAT'S NEXT</span><div className={`studio-island-wrap${islandOpen ? " is-open" : ""}`} ref={islandRef}><button className="studio-island" type="button" aria-expanded={islandOpen} aria-controls="studio-island-panel" onClick={() => setIslandOpen(!islandOpen)} data-cursor="OPEN STUDIO DASHBOARD"><span className="island-indicator" /><span className="island-label">STUDIO LIVE</span><span className="island-equalizer"><i /><i /><i /><i /></span></button><div className="studio-panel" id="studio-island-panel" aria-hidden={!islandOpen} inert={!islandOpen}><div className="studio-panel-head"><span><i /> CODEINCAVE / STUDIO STATUS</span><button type="button" aria-label="Close dashboard" onClick={() => setIslandOpen(false)}>×</button></div><h2>Ideas into<br /><em>reality.</em></h2><p>Engineering practical digital solutions that help businesses move forward.</p><div className="island-stages"><a href="#services" onClick={() => setIslandOpen(false)}><span>01</span><b>Explore solutions</b><i>↗</i></a><a href="#approach" onClick={() => setIslandOpen(false)}><span>02</span><b>Meet our approach</b><i>↗</i></a><a href="#work" onClick={() => setIslandOpen(false)}><span>03</span><b>See what is possible</b><i>↗</i></a></div><a className="island-cta" href="#contact" onClick={() => setIslandOpen(false)}>START A PROJECT <span>↗</span></a></div></div><a href="mailto:ngrethesh@gmail.com" data-cursor="SAY HELLO">LET'S TALK <b>↗</b></a></div></div>
 
       <header className="header">
         <a className="brand" href="#top" aria-label="CodeInCave home"><span className="brand-symbol"><i /><i /><i /></span><span>code<span>in</span>cave<span className="brand-period">.</span></span></a>
         <button className="menu-toggle" type="button" aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><span /><span /></button>
         <nav className={menuOpen ? "navigation is-open" : "navigation"} aria-label="Main navigation" onClick={() => setMenuOpen(false)}>
-          <a href="#services">What we do <small>01</small></a><a href="#process">The process <small>02</small></a><a href="#work">The work <small>03</small></a><a href="#faq">FAQs <small>04</small></a>
+          <a href="#services">What we do</a><a href="#why-us">Why us</a><a href="#process">The process</a><a href="#work">The work</a><a href="#faq">FAQs</a>
         </nav>
         <a className="nav-contact" href="#contact" data-cursor="LET'S BUILD">Start a project <span>↗</span></a>
       </header>
@@ -434,7 +541,7 @@ function App() {
         <div className="section-top reveal"><div><div className="eyebrow"><span className="eyebrow-dash" /> WHAT WE BUILD</div><h2>Technology for<br /><span>what comes next.</span></h2></div><p>From a professional website to a scalable digital product, we pair creative problem-solving with practical engineering to help your business move forward.</p></div>
         <div className="service-grid">{services.map((service, index) => {
           const isOpen = openService === index;
-          return <article className={`service-card service-${index + 1} reveal${isOpen ? " is-open" : ""}`} style={{ "--delay": `${index * 100}ms` }} onPointerMove={handleTilt} onPointerLeave={resetTilt} key={service.id}>
+          return <article className={`service-card service-${index + 1}${isOpen ? " is-open" : ""}`} onPointerMove={handleTilt} onPointerLeave={resetTilt} key={service.id}>
             <button className="service-trigger" type="button" aria-expanded={isOpen} onClick={() => setOpenService(isOpen ? null : index)} data-cursor={isOpen ? "CLOSE" : "EXPLORE"}>
               <span className="service-card-top"><span>{service.id} / {service.category}</span><span className="service-plus">{isOpen ? "−" : "+"}</span></span>
               <span className={`service-object object-${service.symbol}`} aria-hidden="true"><i /><i /><i /></span>
@@ -447,11 +554,28 @@ function App() {
         <div className="services-foot reveal"><span>01 — 03</span><span>BUILT TO SOLVE REAL CHALLENGES.</span><a href="#contact">HAVE AN IDEA TO EXPLORE? <b>LET'S TALK ↗</b></a></div>
       </section>
 
+      <section className="why-us" id="why-us">
+        <div className="why-layout section-pad">
+          <div className="why-copy reveal"><div className="eyebrow"><span className="eyebrow-dash" /> WHY CODEINCAVE</div><h2>The difference between <span>off-the-shelf</span> and built for <em>you.</em></h2><p>We pair technical excellence with creative problem-solving to build reliable, user-focused products around your business and the people you serve.</p><div className="why-actions"><a className="why-primary" href="#contact" data-cursor="TELL US YOUR IDEA">Tell us your idea <span>↗</span></a><a className="why-secondary" href="#services">Explore our services <span>↓</span></a></div><div className="why-points"><article className="why-point"><span className="why-point-icon">✳</span><div><b>Made for your goals</b><small>Custom solutions, shaped around your business.</small></div></article><article className="why-point"><span className="why-point-icon">⌁</span><div><b>Thoughtful by design</b><small>Clear, useful experiences for real people.</small></div></article><article className="why-point"><span className="why-point-icon">&lt;/&gt;</span><div><b>Engineered to last</b><small>Reliable foundations, built to grow with you.</small></div></article><article className="why-point"><span className="why-point-icon">↗</span><div><b>Close collaboration</b><small>Clear communication from idea to launch.</small></div></article></div></div>
+          <div className="why-stage reveal" onPointerMove={handleTilt} onPointerLeave={resetTilt} aria-label="Interactive illustration of connected digital solutions">
+            <div className="why-stage-orbit why-stage-orbit-one" /><div className="why-stage-orbit why-stage-orbit-two" />
+            <div className="why-console"><div className="why-console-top"><span className="why-console-dots"><i /><i /><i /></span><span>CODEINCAVE / SOLUTION SYSTEMS</span><span className="why-live"><i /> READY</span></div><div className="why-console-body"><aside className="why-console-side"><b>C.</b><i className="active">⌂</i><i>◈</i><i>⌘</i><i>⚙</i></aside><div className="why-console-main"><div className="why-greeting"><span>YOUR NEXT IDEA</span><span>01 — 03</span></div><h3>Built around<br /><em>your business.</em></h3><p>Digital tools that bring good ideas to life.</p><div className="why-system-map"><div className="why-map-core"><span>CC</span><i>YOUR<br />BUSINESS</i></div><div className="why-map-node why-node-web"><b>W</b><span>WEB</span></div><div className="why-map-node why-node-ai"><b>✳</b><span>AI</span></div><div className="why-map-node why-node-code"><b>&lt;/&gt;</b><span>SOFTWARE</span></div><i className="why-map-link why-link-one" /><i className="why-map-link why-link-two" /><i className="why-map-link why-link-three" /></div><div className="why-console-bottom"><span><i /> USER-FOCUSED</span><span>ENGINEERED TO SCALE <b>↗</b></span></div></div></div></div>
+            <div className="why-float why-float-web"><span>01 / WEB</span><b>Digital presence</b><i>↗</i></div><div className="why-float why-float-ai"><span>02 / AI</span><b>Smarter workflows</b><i>✳</i></div><div className="why-stage-caption"><span>ONE PARTNER</span><i /> <span>IDEA TO IMPACT</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="capability-marquee" aria-label="CodeInCave capabilities: web development, custom software, AI applications, and scalable digital products">
+        <span className="marquee-label"><i /> WHAT WE ENGINEER / CODEINCAVE</span>
+        <div className="marquee-lane marquee-lane-one" aria-hidden="true"><div className="marquee-track">{[0, 1, 2, 3].map((copy) => <div className="marquee-group" key={copy}><span>WEB EXPERIENCES</span><i>✳</i><span>CUSTOM SOFTWARE</span><i>✳</i><span>AI APPLICATIONS</span><i>✳</i><span>SAAS PRODUCTS</span><i>✳</i></div>)}</div></div>
+        <div className="marquee-lane marquee-lane-two" aria-hidden="true"><div className="marquee-track">{[0, 1, 2, 3].map((copy) => <div className="marquee-group" key={copy}><span>DIGITAL SOLUTIONS</span><i>✳</i><span>PRODUCT ENGINEERING</span><i>✳</i><span>BUSINESS APPS</span><i>✳</i><span>SCALABLE SYSTEMS</span><i>✳</i></div>)}</div></div>
+      </section>
+
       <section className="manifesto" id="approach">
         <div className="manifesto-noise" />
         <div className="manifesto-inner section-pad">
           <div className="manifesto-kicker reveal"><span>WHY CODEINCAVE</span><span>02 / 04</span></div>
-          <div className="manifesto-heading reveal"><span className="quote-mark">“</span><h2>Every great idea<br />deserves the right <em>engineering.</em></h2><span className="manifesto-aside">BUILDING MORE<br />THAN SOFTWARE.</span></div>
+          <div className="manifesto-heading reveal"><span className="quote-mark">“</span><h2 className="manifesto-assembly" ref={manifestoHeadingRef} aria-label="Every great idea deserves the right engineering."><span className="manifesto-line"><span className="manifesto-word">Every</span>{" "}<span className="manifesto-word">great</span>{" "}<span className="manifesto-word">idea</span></span><span className="manifesto-line"><span className="manifesto-word">deserves</span>{" "}<span className="manifesto-word">the</span>{" "}<span className="manifesto-word">right</span>{" "}<span className="manifesto-word manifesto-word-accent">engineering.</span></span></h2><span className="manifesto-aside">BUILDING MORE<br />THAN SOFTWARE.</span></div>
           <div className="manifesto-bottom reveal"><p>We help businesses establish a strong digital presence, streamline operations, and grow through technology. We build solutions that empower teams, inspire innovation, and create opportunities for the future.</p><a href="#work" className="outline-link" data-cursor="SEE HOW">See how we approach a build <span>↗</span></a></div>
           <div className="principles reveal"><div><span>01 / TECHNICAL EXCELLENCE</span><b>Build reliable, efficient solutions.</b></div><div><span>02 / CREATIVE PROBLEM-SOLVING</span><b>Make technology useful in the real world.</b></div><div><span>03 / BUILT AROUND PEOPLE</span><b>Keep every experience clear and human.</b></div></div>
         </div>
@@ -483,22 +607,33 @@ function App() {
       </section>
 
       <section className="faq section-pad" id="faq">
-        <div className="section-top reveal"><div><div className="eyebrow"><span className="eyebrow-dash" /> GOOD QUESTIONS, CLEAR ANSWERS</div><h2>Before we<br /><span>get into it.</span></h2></div><div className="faq-aside"><p>Still thinking it through? That is a fine place to start.</p><a href="mailto:hello@codeincave.com" data-cursor="ASK US">Ask us directly <span>↗</span></a><div className="faq-gem" aria-hidden="true"><div className="faq-code-tile"><span>&lt;/&gt;</span><i /><i /><i /></div><b className="faq-orbit-dot" /></div></div></div>
+        <div className="section-top reveal"><div><div className="eyebrow"><span className="eyebrow-dash" /> GOOD QUESTIONS, CLEAR ANSWERS</div><h2>Before we<br /><span>get into it.</span></h2></div><div className="faq-aside"><p>Still thinking it through? That is a fine place to start.</p><a href="mailto:ngrethesh@gmail.com" data-cursor="ASK US">Ask us directly <span>↗</span></a><div className="faq-gem" aria-hidden="true"><div className="faq-code-tile"><span>&lt;/&gt;</span><i /><i /><i /></div><b className="faq-orbit-dot" /></div></div></div>
         <div className="faq-list reveal">{faqs.map((faq, index) => { const isOpen = openFaq === index; return <article className={isOpen ? "faq-item is-open" : "faq-item"} key={faq.question}><button type="button" aria-expanded={isOpen} onClick={() => setOpenFaq(isOpen ? null : index)}><span className="faq-number">0{index + 1}</span><b>{faq.question}</b><i>{isOpen ? "−" : "+"}</i></button><div className="faq-answer" aria-hidden={!isOpen} inert={!isOpen}><p>{faq.answer}</p></div></article>; })}</div>
       </section>
-      <section className="contact" id="contact"><div className="contact-orb contact-orb-one" /><div className="contact-orb contact-orb-two" /><div className="contact-inner section-pad reveal"><div className="eyebrow"><span className="eyebrow-dash" /> LET'S BUILD WHAT'S NEXT</div><div className="contact-layout"><h2>Bring your idea.<br />We'll build the <span>future.</span></h2><div className="contact-copy"><p>From a stronger digital presence to software that streamlines your business, let's turn your next idea into something real.</p><span className="contact-email">PREFER EMAIL? <a href="mailto:hello@codeincave.com">HELLO@CODEINCAVE.COM</a></span></div></div>
+      <div className="contact-marquee" aria-label="Ideas into reality, digital solutions built around your business"><div className="contact-marquee-track">{[0, 1, 2, 3].map((copy) => <div className="contact-marquee-group" aria-hidden={copy !== 0} key={copy}><span>IDEAS INTO REALITY</span><i>✳</i><span>WEB · SOFTWARE · AI</span><i>✳</i><span>BUILT AROUND YOUR BUSINESS</span><i>✳</i><span>CODEINCAVE DIGITAL SOLUTIONS</span><i>✳</i></div>)}</div></div>
+      <section className="contact" id="contact"><div className="contact-orb contact-orb-one" /><div className="contact-orb contact-orb-two" /><div className="contact-inner section-pad reveal"><div className="eyebrow"><span className="eyebrow-dash" /> LET'S BUILD WHAT'S NEXT</div><div className="contact-layout"><h2>Bring your idea.<br />We'll build the <span>future.</span></h2><div className="contact-copy"><p>From a stronger digital presence to software that streamlines your business, let's turn your next idea into something real.</p><span className="contact-email">PREFER EMAIL? <a href="mailto:ngrethesh@gmail.com">KARTHIKEYAGUDIMALLA2007@GMAIL.COM</a></span></div></div>
         <form className="brief-form" onSubmit={handleBriefSubmit}>
           <div className="brief-form-heading"><div><span className="brief-kicker">PROJECT INQUIRY / 001</span><h3>Send us a brief</h3></div><p>Tell us about your project. We'll get back to you as soon as we can.</p></div>
           <div className="brief-fields">
+            <label className="brief-honeypot" aria-hidden="true">Leave this field empty<input name="website" tabIndex={-1} autoComplete="off" /></label>
             <label className="brief-field"><span>Your name <i>*</i></span><input name="name" autoComplete="name" placeholder="Your name" required /></label>
             <label className="brief-field"><span>Email <i>*</i></span><input name="email" type="email" autoComplete="email" placeholder="you@company.com" required /></label>
             <label className="brief-field brief-field-full"><span>Company / project name</span><input name="company" autoComplete="organization" placeholder="Your startup / company" /></label>
             <fieldset className="brief-budget brief-field-full"><legend>Budget range</legend><div>{["Under ₹50K", "₹50K – ₹1L", "₹1L – ₹3L", "₹3L+", "Let's discuss"].map((budget) => <button type="button" className={selectedBudget === budget ? "is-selected" : ""} aria-pressed={selectedBudget === budget} onClick={() => setSelectedBudget(budget)} key={budget}>{budget}</button>)}</div></fieldset>
             <label className="brief-field brief-field-full"><span>Tell us about your project <i>*</i></span><textarea name="project" rows="5" placeholder="What are you building? What problem needs to be solved? What's your timeline?" required /></label>
-            <div className="brief-submit brief-field-full"><button type="submit" className="brief-submit-button" data-cursor="SEND PROJECT BRIEF">Send project brief <span>↗</span></button><p>Submitting opens your email app with the details filled in.</p>{briefStatus && <p className="brief-status" role="status">{briefStatus}</p>}</div>
+            <div className="brief-submit brief-field-full"><button type="submit" className="brief-submit-button" disabled={briefSubmitting} data-cursor="SEND PROJECT BRIEF">{briefSubmitting ? "Sending brief…" : "Send project brief"} <span>{briefSubmitting ? "···" : "↗"}</span></button><p>Your brief is sent securely to the CodeInCave team.</p>{briefStatus && <p className="brief-status" role="status">{briefStatus}</p>}</div>
           </div>
         </form>
-        <div className="contact-footer"><a className="brand footer-brand" href="#top"><span className="brand-symbol"><i /><i /><i /></span><span>code<span>in</span>cave<span className="brand-period">.</span></span></a><span>CODEINCAVE DIGITAL SOLUTIONS · TELANGANA, INDIA</span><span>© {new Date().getFullYear()} CODEINCAVE</span></div></div></section>
+        {briefConfirmationOpen && <div className="brief-confirmation-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setBriefConfirmationOpen(false); }}><section className="brief-confirmation" role="dialog" aria-modal="true" aria-labelledby="brief-confirmation-title"><button className="brief-confirmation-close" type="button" aria-label="Close confirmation" onClick={() => setBriefConfirmationOpen(false)}>×</button><span className="brief-confirmation-icon">✓</span><span className="brief-kicker">PROJECT BRIEF / SENT</span><h3 id="brief-confirmation-title">Thank you for reaching out.</h3><p>Your project brief was sent successfully to <b>ngrethesh@gmail.com</b>. The CodeInCave team will be in touch.</p><button className="brief-confirmation-action" type="button" onClick={() => setBriefConfirmationOpen(false)}>Got it <span>↗</span></button></section></div>}
+        <footer className="contact-footer">
+          <div className="footer-main">
+            <div className="footer-about"><a className="brand footer-brand" href="#top" aria-label="CodeInCave home"><span className="brand-symbol"><i /><i /><i /></span><span>code<span>in</span>cave<span className="brand-period">.</span></span></a><p>CodeInCave is a digital solutions company building thoughtful websites, custom software, AI-powered applications, and scalable products for real-world challenges.</p></div>
+            <div className="footer-column"><h3>EXPLORE</h3><a href="#services">What we build <span>↗</span></a><a href="#process">Our process <span>↗</span></a><a href="#work">Product preview <span>↗</span></a><a href="#faq">FAQs <span>↗</span></a></div>
+            <div className="footer-column"><h3>SOLUTIONS</h3><a href="#services">Custom websites <span>↗</span></a><a href="#services">Apps & AI <span>↗</span></a><a href="#services">Custom software <span>↗</span></a><a href="#services">Scalable digital products <span>↗</span></a></div>
+            <div className="footer-column"><h3>GET IN TOUCH</h3><a href="mailto:ngrethesh@gmail.com">ngrethesh@gmail.com <span>↗</span></a><a href="#contact">Send a project brief <span>↗</span></a><span className="footer-location">TELANGANA, INDIA</span><span className="footer-location">DIGITAL SOLUTIONS</span></div>
+          </div>
+          <div className="footer-bottom"><span>© {new Date().getFullYear()} CODEINCAVE DIGITAL SOLUTIONS. ALL RIGHTS RESERVED.</span><div><a href="#faq">FAQs</a><a href="#top">BACK TO TOP ↑</a></div></div>
+        </footer></div></section>
     </main>
   );
 }
