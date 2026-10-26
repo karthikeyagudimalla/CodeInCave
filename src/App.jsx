@@ -459,7 +459,7 @@ function App() {
       "Project brief:",
       formData.get("project"),
     ].join("\n");
-    const whatsappNumber = "919573703312";
+    const whatsappNumber = "918143120418";
     const whatsappHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappHref, "_blank", "noopener,noreferrer");
   };

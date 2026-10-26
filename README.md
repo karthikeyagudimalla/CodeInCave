@@ -17,4 +17,4 @@ If you are developing a production application, we recommend using TypeScript wi
 
 ## Project brief form
 
-The project brief form offers a prefilled Gmail compose draft addressed to `codeincavedigitalsolutions@gmail.com` or a WhatsApp message to `+91 95737 03312`. The visitor reviews the details and taps **Send** in Gmail or WhatsApp. The site cannot detect whether the visitor sent or discarded either message, so it keeps the form details and does not show a sent confirmation.
+The project brief form offers a prefilled Gmail compose draft addressed to `codeincavedigitalsolutions@gmail.com` or a WhatsApp message to `+91 81431 20418`. The visitor reviews the details and taps **Send** in Gmail or WhatsApp. The site cannot detect whether the visitor sent or discarded either message, so it keeps the form details and does not show a sent confirmation.
