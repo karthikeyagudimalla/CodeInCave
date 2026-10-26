@@ -434,7 +434,7 @@ function App() {
         if (!gmailAppOpened && !document.hidden) window.location.assign(draftHref);
       }, 1200);
     } else if (isAndroid) {
-      window.location.href = `intent://${encodeURIComponent(recipient)}?subject=${encodedSubject}&body=${encodedBody}#Intent;scheme=mailto;package=com.google.android.gm;S.browser_fallback_url=${encodeURIComponent(draftHref)};end`;
+      window.location.href = `intent:${encodeURIComponent(recipient)}?subject=${encodedSubject}&body=${encodedBody}#Intent;scheme=mailto;package=com.google.android.gm;S.browser_fallback_url=${encodeURIComponent(draftHref)};end`;
     } else {
       window.location.assign(draftHref);
     }
