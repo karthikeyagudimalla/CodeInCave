@@ -17,4 +17,4 @@ If you are developing a production application, we recommend using TypeScript wi
 
 ## Project brief form
 
-The project brief form opens a prefilled Gmail compose draft addressed to `ngrethesh@gmail.com`. The visitor reviews the details and taps **Send** in Gmail. The site cannot detect whether the visitor sent or discarded the draft, so it keeps the form details and does not show a sent confirmation.
+The project brief form opens a prefilled Gmail compose draft addressed to `codeincavedigitalsolutions@gmail.com`. The visitor reviews the details and taps **Send** in Gmail. The site cannot detect whether the visitor sent or discarded the draft, so it keeps the form details and does not show a sent confirmation.

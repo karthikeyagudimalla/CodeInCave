@@ -63,22 +63,22 @@ function Core({ energized }) {
       {/* Floating product tiles */}
       <mesh position={[-1.34, -0.35, -0.32]} rotation={[0.08, 0.28, 0.12]}>
         <boxGeometry args={[0.68, 0.9, 0.12]} />
-        <meshPhysicalMaterial color="#171629" emissive="#123b3b" emissiveIntensity={0.18} metalness={0.45} roughness={0.24} />
-        <Edges scale={1.01} color="#ff7a70" threshold={1} />
+        <meshPhysicalMaterial color="#171629" emissive="#16324a" emissiveIntensity={0.18} metalness={0.45} roughness={0.24} />
+        <Edges scale={1.01} color="#f2ae3b" threshold={1} />
       </mesh>
       <mesh position={[-1.34, -0.28, -0.245]} rotation={[0.08, 0.28, 0.12]}>
-        <boxGeometry args={[0.42, 0.035, 0.012]} /><meshBasicMaterial color="#123b3b" />
+        <boxGeometry args={[0.42, 0.035, 0.012]} /><meshBasicMaterial color="#16324a" />
       </mesh>
       <mesh position={[-1.34, -0.39, -0.245]} rotation={[0.08, 0.28, 0.12]}>
         <boxGeometry args={[0.3, 0.025, 0.012]} /><meshBasicMaterial color="#8a8f84" />
       </mesh>
       <mesh position={[1.28, 0.38, -0.3]} rotation={[-0.08, -0.3, -0.12]}>
         <boxGeometry args={[0.73, 0.6, 0.12]} />
-        <meshPhysicalMaterial color="#101b2a" emissive="#123b3b" emissiveIntensity={0.17} metalness={0.4} roughness={0.23} />
-        <Edges scale={1.01} color="#ff7a70" threshold={1} />
+        <meshPhysicalMaterial color="#101b2a" emissive="#16324a" emissiveIntensity={0.17} metalness={0.4} roughness={0.23} />
+        <Edges scale={1.01} color="#f2ae3b" threshold={1} />
       </mesh>
       <mesh position={[1.28, 0.36, -0.225]} rotation={[-0.08, -0.3, -0.12]}>
-        <boxGeometry args={[0.43, 0.08, 0.012]} /><meshBasicMaterial color="#ff7a70" />
+        <boxGeometry args={[0.43, 0.08, 0.012]} /><meshBasicMaterial color="#f2ae3b" />
       </mesh>
       <mesh position={[1.28, 0.2, -0.225]} rotation={[-0.08, -0.3, -0.12]}>
         <boxGeometry args={[0.3, 0.025, 0.012]} /><meshBasicMaterial color="#a5b3a5" />
@@ -89,43 +89,43 @@ function Core({ energized }) {
         <mesh>
           <boxGeometry args={[2.12, 1.58, 0.2]} />
           <meshPhysicalMaterial color="#121722" emissive="#0e1826" emissiveIntensity={0.18} metalness={0.45} roughness={0.22} clearcoat={0.8} />
-          <Edges scale={1.006} color="#123b3b" threshold={1} />
+          <Edges scale={1.006} color="#16324a" threshold={1} />
         </mesh>
         <mesh position={[0, 0.62, 0.108]}>
-          <boxGeometry args={[1.97, 0.055, 0.025]} /><meshBasicMaterial color="#353a33" />
+          <boxGeometry args={[1.97, 0.055, 0.025]} /><meshBasicMaterial color="#353e4a" />
         </mesh>
         {[-0.86, -0.73, -0.6].map((x, i) => (
           <mesh key={x} position={[x, 0.62, 0.13]}>
-            <sphereGeometry args={[0.025, 12, 12]} /><meshBasicMaterial color={i === 0 ? "#123b3b" : i === 1 ? "#ff7a70" : "#ff7a70"} />
+            <sphereGeometry args={[0.025, 12, 12]} /><meshBasicMaterial color={i === 0 ? "#16324a" : i === 1 ? "#f2ae3b" : "#f2ae3b"} />
           </mesh>
         ))}
         <mesh position={[-0.63, 0.38, 0.118]}>
           <boxGeometry args={[0.6, 0.026, 0.018]} /><meshBasicMaterial color="#747b6f" />
         </mesh>
         <mesh position={[0.46, 0.38, 0.118]}>
-          <boxGeometry args={[0.42, 0.026, 0.018]} /><meshBasicMaterial color="#ff7a70" />
+          <boxGeometry args={[0.42, 0.026, 0.018]} /><meshBasicMaterial color="#f2ae3b" />
         </mesh>
 
         {/* Code brackets and slash as dimensional geometry */}
         <group position={[0, -0.02, 0.17]}>
           <mesh position={[-0.44, 0, 0]} rotation={[0, 0, 0.62]}>
-            <boxGeometry args={[0.34, 0.065, 0.075]} /><meshPhysicalMaterial color="#123b3b" emissive="#123b3b" emissiveIntensity={0.28} metalness={0.35} roughness={0.2} />
+            <boxGeometry args={[0.34, 0.065, 0.075]} /><meshPhysicalMaterial color="#16324a" emissive="#16324a" emissiveIntensity={0.28} metalness={0.35} roughness={0.2} />
           </mesh>
           <mesh position={[-0.44, 0, 0]} rotation={[0, 0, -0.62]}>
-            <boxGeometry args={[0.34, 0.065, 0.075]} /><meshPhysicalMaterial color="#123b3b" emissive="#123b3b" emissiveIntensity={0.28} metalness={0.35} roughness={0.2} />
+            <boxGeometry args={[0.34, 0.065, 0.075]} /><meshPhysicalMaterial color="#16324a" emissive="#16324a" emissiveIntensity={0.28} metalness={0.35} roughness={0.2} />
           </mesh>
           <mesh position={[0, 0, 0]} rotation={[0, 0, 0.34]}>
-            <boxGeometry args={[0.065, 0.62, 0.075]} /><meshPhysicalMaterial color="#ff7a70" emissive="#ff7a70" emissiveIntensity={0.3} metalness={0.35} roughness={0.2} />
+            <boxGeometry args={[0.065, 0.62, 0.075]} /><meshPhysicalMaterial color="#f2ae3b" emissive="#f2ae3b" emissiveIntensity={0.3} metalness={0.35} roughness={0.2} />
           </mesh>
           <mesh position={[0.44, 0, 0]} rotation={[0, 0, -0.62]}>
-            <boxGeometry args={[0.34, 0.065, 0.075]} /><meshPhysicalMaterial color="#ff7a70" emissive="#ff7a70" emissiveIntensity={0.28} metalness={0.35} roughness={0.2} />
+            <boxGeometry args={[0.34, 0.065, 0.075]} /><meshPhysicalMaterial color="#f2ae3b" emissive="#f2ae3b" emissiveIntensity={0.28} metalness={0.35} roughness={0.2} />
           </mesh>
           <mesh position={[0.44, 0, 0]} rotation={[0, 0, 0.62]}>
-            <boxGeometry args={[0.34, 0.065, 0.075]} /><meshPhysicalMaterial color="#ff7a70" emissive="#ff7a70" emissiveIntensity={0.28} metalness={0.35} roughness={0.2} />
+            <boxGeometry args={[0.34, 0.065, 0.075]} /><meshPhysicalMaterial color="#f2ae3b" emissive="#f2ae3b" emissiveIntensity={0.28} metalness={0.35} roughness={0.2} />
           </mesh>
         </group>
 
-        {[[-0.52, -0.48, 0.12, 0.44, "#123b3b"], [0.18, -0.48, 0.12, 0.62, "#62695f"], [-0.38, -0.59, 0.12, 0.5, "#ff7a70"], [0.34, -0.59, 0.12, 0.42, "#62695f"]].map(([x, y, z, width, color], i) => (
+        {[[-0.52, -0.48, 0.12, 0.44, "#16324a"], [0.18, -0.48, 0.12, 0.62, "#626d80"], [-0.38, -0.59, 0.12, 0.5, "#f2ae3b"], [0.34, -0.59, 0.12, 0.42, "#626d80"]].map(([x, y, z, width, color], i) => (
           <mesh key={i} position={[x, y, z]}>
             <boxGeometry args={[width, 0.022, 0.02]} /><meshBasicMaterial color={color} />
           </mesh>
@@ -134,16 +134,16 @@ function Core({ energized }) {
 
       {/* Orbit lines connect product, code, and interface layers */}
       <mesh rotation={[0.82, 0.2, -0.38]}>
-        <torusGeometry args={[1.72, 0.009, 8, 140]} /><meshBasicMaterial color="#ff7a70" transparent opacity={0.8} />
+        <torusGeometry args={[1.72, 0.009, 8, 140]} /><meshBasicMaterial color="#f2ae3b" transparent opacity={0.8} />
       </mesh>
       <mesh rotation={[-0.62, 0.7, 0.72]}>
-        <torusGeometry args={[1.88, 0.007, 8, 140]} /><meshBasicMaterial color="#ff7a70" transparent opacity={0.64} />
+        <torusGeometry args={[1.88, 0.007, 8, 140]} /><meshBasicMaterial color="#f2ae3b" transparent opacity={0.64} />
       </mesh>
       <mesh position={[0.96, 0.98, 0.25]}>
-        <icosahedronGeometry args={[0.055, 1]} /><meshBasicMaterial color="#ff7a70" />
+        <icosahedronGeometry args={[0.055, 1]} /><meshBasicMaterial color="#f2ae3b" />
       </mesh>
       <mesh position={[-1.2, -0.94, -0.1]}>
-        <icosahedronGeometry args={[0.045, 1]} /><meshBasicMaterial color="#ff7a70" />
+        <icosahedronGeometry args={[0.045, 1]} /><meshBasicMaterial color="#f2ae3b" />
       </mesh>
       <group ref={burst} scale={0.001}>
         {Array.from({ length: 30 }, (_, i) => {
@@ -151,7 +151,7 @@ function Core({ energized }) {
           const theta = Math.PI * (1 + Math.sqrt(5)) * i;
           const radius = 1.8 + (i % 4) * 0.12;
           const position = [radius * Math.sin(phi) * Math.cos(theta), radius * Math.sin(phi) * Math.sin(theta), radius * Math.cos(phi)];
-          const colors = ["#123b3b", "#ff7a70", "#ff7a70", "#fff0c2"];
+          const colors = ["#16324a", "#f2ae3b", "#f2ae3b", "#fff0cd"];
           return <mesh key={i} position={position} scale={0.035 + (i % 3) * 0.012}><icosahedronGeometry args={[1, 0]} /><meshBasicMaterial color={colors[i % colors.length]} transparent opacity={energized ? 0.95 : 0} /></mesh>;
         })}
       </group>
@@ -179,23 +179,23 @@ function ProcessObject() {
     <group ref={group}>
       <mesh>
         <icosahedronGeometry args={[0.43, 1]} />
-        <meshPhysicalMaterial color="#20d6c2" emissive="#0b6760" emissiveIntensity={0.34} metalness={0.58} roughness={0.2} clearcoat={0.85} />
-        <Edges scale={1.02} color="#d2fff8" threshold={1} />
+        <meshPhysicalMaterial color="#86c5ff" emissive="#255986" emissiveIntensity={0.34} metalness={0.58} roughness={0.2} clearcoat={0.85} />
+        <Edges scale={1.02} color="#eaf5ff" threshold={1} />
       </mesh>
       <mesh scale={0.72} rotation={[0.3, 0.18, 0]}>
-        <icosahedronGeometry args={[0.43, 1]} /><meshBasicMaterial color="#ff7a70" wireframe transparent opacity={0.36} />
+        <icosahedronGeometry args={[0.43, 1]} /><meshBasicMaterial color="#f2ae3b" wireframe transparent opacity={0.36} />
       </mesh>
       <mesh rotation={[0.9, 0.3, -0.5]}>
-        <torusGeometry args={[0.7, 0.012, 8, 96]} /><meshBasicMaterial color="#ff7a70" />
+        <torusGeometry args={[0.7, 0.012, 8, 96]} /><meshBasicMaterial color="#f2ae3b" />
       </mesh>
       <mesh rotation={[-0.4, 0.8, 0.4]}>
-        <torusGeometry args={[0.83, 0.008, 8, 96]} /><meshBasicMaterial color="#20d6c2" transparent opacity={0.65} />
+        <torusGeometry args={[0.83, 0.008, 8, 96]} /><meshBasicMaterial color="#86c5ff" transparent opacity={0.65} />
       </mesh>
       <mesh position={[0.59, 0.33, 0.12]}>
-        <icosahedronGeometry args={[0.065, 1]} /><meshBasicMaterial color="#ffb2a9" />
+        <icosahedronGeometry args={[0.065, 1]} /><meshBasicMaterial color="#ffdf9b" />
       </mesh>
       <mesh position={[-0.67, -0.18, -0.08]}>
-        <icosahedronGeometry args={[0.045, 1]} /><meshBasicMaterial color="#20d6c2" />
+        <icosahedronGeometry args={[0.045, 1]} /><meshBasicMaterial color="#86c5ff" />
       </mesh>
     </group>
   );
@@ -411,7 +411,7 @@ function App() {
       "Best,",
       briefDetails.name,
     ].join("\n");
-    const recipient = "ngrethesh@gmail.com";
+    const recipient = "codeincavedigitalsolutions@gmail.com";
     const encodedSubject = encodeURIComponent(mailSubject);
     const encodedBody = encodeURIComponent(mailBody);
     const draftHref = `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=${encodeURIComponent(recipient)}&su=${encodedSubject}&body=${encodedBody}`;
@@ -520,13 +520,13 @@ function App() {
   return (
     <main className={energized ? "site-shell is-energized" : "site-shell"}>
       <PointerHalo />
-      <div className="entrance-screen" aria-hidden="true"><div className="entrance-panel entrance-panel-top" /><div className="entrance-panel entrance-panel-bottom" /><div className="entrance-content"><span className="entrance-kicker">ENGINEERING WHAT'S NEXT <i>·</i> 001</span><div className="entrance-emblem"><i /><i /><i /></div><div className="entrance-wordmark">CODE<span>IN</span>CAVE</div><div className="entrance-progress"><i /></div><span className="entrance-caption">IDEAS INTO REAL-WORLD SOLUTIONS</span></div><span className="entrance-coordinate entrance-coordinate-left">TELANGANA / INDIA</span><span className="entrance-coordinate entrance-coordinate-right">WEB · SOFTWARE · AI</span></div>
+      <div className="entrance-screen" aria-hidden="true"><div className="entrance-panel entrance-panel-top" /><div className="entrance-panel entrance-panel-bottom" /><div className="entrance-content"><span className="entrance-kicker">ENGINEERING WHAT'S NEXT <i>·</i> 001</span><img className="entrance-logo" src="/codeincave-loader.png" alt="" /><div className="entrance-progress"><i /></div><span className="entrance-caption">IDEAS INTO REAL-WORLD SOLUTIONS</span></div><span className="entrance-coordinate entrance-coordinate-left">TELANGANA / INDIA</span><span className="entrance-coordinate entrance-coordinate-right">WEB · SOFTWARE · AI</span></div>
       <div className="pointer-light" aria-hidden="true" />
       <div className="scroll-progress" aria-hidden="true" />
-      <div className="topline"><div className="topline-inner"><span><i className="availability-dot" /> BUILDING WHAT'S NEXT</span><div className={`studio-island-wrap${islandOpen ? " is-open" : ""}`} ref={islandRef}><button className="studio-island" type="button" aria-expanded={islandOpen} aria-controls="studio-island-panel" onClick={() => setIslandOpen(!islandOpen)} data-cursor="OPEN STUDIO DASHBOARD"><span className="island-indicator" /><span className="island-label">STUDIO LIVE</span><span className="island-equalizer"><i /><i /><i /><i /></span></button><div className="studio-panel" id="studio-island-panel" aria-hidden={!islandOpen} inert={!islandOpen}><div className="studio-panel-head"><span><i /> CODEINCAVE / STUDIO STATUS</span><button type="button" aria-label="Close dashboard" onClick={() => setIslandOpen(false)}>×</button></div><h2>Ideas into<br /><em>reality.</em></h2><p>Engineering practical digital solutions that help businesses move forward.</p><div className="island-stages"><a href="#services" onClick={() => setIslandOpen(false)}><span>01</span><b>Explore solutions</b><i>↗</i></a><a href="#approach" onClick={() => setIslandOpen(false)}><span>02</span><b>Meet our approach</b><i>↗</i></a><a href="#work" onClick={() => setIslandOpen(false)}><span>03</span><b>See what is possible</b><i>↗</i></a></div><a className="island-cta" href="#contact" onClick={() => setIslandOpen(false)}>START A PROJECT <span>↗</span></a></div></div><a href="https://mail.google.com/mail/?view=cm&fs=1&to=ngrethesh%40gmail.com" target="_blank" rel="noreferrer" data-cursor="SAY HELLO">LET'S TALK <b>↗</b></a></div></div>
+      <div className="topline"><div className="topline-inner"><span><i className="availability-dot" /> BUILDING WHAT'S NEXT</span><div className={`studio-island-wrap${islandOpen ? " is-open" : ""}`} ref={islandRef}><button className="studio-island" type="button" aria-expanded={islandOpen} aria-controls="studio-island-panel" onClick={() => setIslandOpen(!islandOpen)} data-cursor="OPEN STUDIO DASHBOARD"><span className="island-indicator" /><span className="island-label">STUDIO LIVE</span><span className="island-equalizer"><i /><i /><i /><i /></span></button><div className="studio-panel" id="studio-island-panel" aria-hidden={!islandOpen} inert={!islandOpen}><div className="studio-panel-head"><span><i /> CODEINCAVE / STUDIO STATUS</span><button type="button" aria-label="Close dashboard" onClick={() => setIslandOpen(false)}>×</button></div><h2>Ideas into<br /><em>reality.</em></h2><p>Engineering practical digital solutions that help businesses move forward.</p><div className="island-stages"><a href="#services" onClick={() => setIslandOpen(false)}><span>01</span><b>Explore solutions</b><i>↗</i></a><a href="#approach" onClick={() => setIslandOpen(false)}><span>02</span><b>Meet our approach</b><i>↗</i></a><a href="#work" onClick={() => setIslandOpen(false)}><span>03</span><b>See what is possible</b><i>↗</i></a></div><a className="island-cta" href="#contact" onClick={() => setIslandOpen(false)}>START A PROJECT <span>↗</span></a></div></div><a href="https://mail.google.com/mail/?view=cm&fs=1&to=codeincavedigitalsolutions%40gmail.com" target="_blank" rel="noreferrer" data-cursor="SAY HELLO">LET'S TALK <b>↗</b></a></div></div>
 
       <header className="header">
-        <a className="brand" href="#top" aria-label="CodeInCave home"><span className="brand-symbol"><i /><i /><i /></span><span>code<span>in</span>cave<span className="brand-period">.</span></span></a>
+        <a className="brand" href="#top" aria-label="CodeInCave home"><img className="brand-logo" src="/codeincave-wordmark.png" alt="" /></a>
         <button className="menu-toggle" type="button" aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><span /><span /></button>
         <nav className={menuOpen ? "navigation is-open" : "navigation"} aria-label="Main navigation" onClick={() => setMenuOpen(false)}>
           <a href="#services">What we do</a><a href="#why-us">Why us</a><a href="#process">The process</a><a href="#work">The work</a><a href="#faq">FAQs</a>
@@ -548,7 +548,7 @@ function App() {
           <div className="visual-orbit orbit-one" /><div className="visual-orbit orbit-two" /><div className="visual-crosshair crosshair-one" /><div className="visual-crosshair crosshair-two" />
 
           <div className="canvas-wrap"><div className="canvas-halo" /><Canvas camera={{ position: [0, 0, 5.2], fov: 42 }} dpr={[1, 1.5]} gl={{ alpha: true, antialias: true }}>
-            <ambientLight intensity={0.72} /><directionalLight position={[3, 4, 5]} intensity={2.3} color="#ff7a70" /><pointLight position={[-3, -2, 2]} intensity={22} color="#ff7a70" /><pointLight position={[3, 1, -2]} intensity={16} color="#ff7a70" /><Core energized={energized} />
+            <ambientLight intensity={0.72} /><directionalLight position={[3, 4, 5]} intensity={2.3} color="#f2ae3b" /><pointLight position={[-3, -2, 2]} intensity={22} color="#f2ae3b" /><pointLight position={[3, 1, -2]} intensity={16} color="#f2ae3b" /><Core energized={energized} />
           </Canvas></div>
           <div className="visual-index"><span>IDEA</span><i /> <span>BUILD</span><i /> <span>REALITY</span></div>
           <div className="visual-coordinate">11°01' N<br />76°57' E</div>
@@ -610,7 +610,7 @@ function App() {
         <div className="section-top reveal"><div><div className="eyebrow"><span className="eyebrow-dash" /> FROM FIRST IDEA TO LAUNCH</div><h2>Good engineering<br /><span>makes ideas real.</span></h2></div><p>Choose a step to see how we bring technical excellence and creative problem-solving to your project.</p></div>
         <div className="process-layout reveal">
           <div className="process-steps" role="group" aria-label="Project stages">{phases.map((phase, index) => <button type="button" className={activePhase === index ? "process-step is-active" : "process-step"} aria-pressed={activePhase === index} onClick={() => setActivePhase(index)} key={phase.id}><span>{phase.id}</span><b>{phase.label}</b><i>{phase.title}</i><em>↗</em></button>)}</div>
-          <article className="process-detail interactive-3d" onPointerMove={handleTilt} onPointerLeave={resetTilt} key={activePhase}><div className="process-detail-head"><span>PROJECT PATH / {phases[activePhase].id}</span><span className="process-live"><i /> IN THE OPEN</span></div><div className="process-orbit" aria-hidden="true"><Canvas camera={{ position: [0, 0, 3.3], fov: 42 }} dpr={[1, 1.4]} gl={{ alpha: true, antialias: true }}><ambientLight intensity={0.9} /><directionalLight position={[2, 3, 4]} intensity={1.8} color="#f3f2ee" /><pointLight position={[-2, 1, 2]} intensity={8} color="#20d6c2" /><ProcessObject /></Canvas></div><div className="process-detail-copy"><span className="process-label">{phases[activePhase].label}</span><h3>{phases[activePhase].title}</h3><p>{phases[activePhase].body}</p></div><div className="process-progress"><span style={{ width: `${((activePhase + 1) / phases.length) * 100}%` }} /></div><div className="process-output"><span>THE USEFUL OUTPUT</span><b>{phases[activePhase].output}</b><i>{phases[activePhase].id}</i></div></article>
+          <article className="process-detail interactive-3d" onPointerMove={handleTilt} onPointerLeave={resetTilt} key={activePhase}><div className="process-detail-head"><span>PROJECT PATH / {phases[activePhase].id}</span><span className="process-live"><i /> IN THE OPEN</span></div><div className="process-orbit" aria-hidden="true"><Canvas camera={{ position: [0, 0, 3.3], fov: 42 }} dpr={[1, 1.4]} gl={{ alpha: true, antialias: true }}><ambientLight intensity={0.9} /><directionalLight position={[2, 3, 4]} intensity={1.8} color="#f3f2ee" /><pointLight position={[-2, 1, 2]} intensity={8} color="#86c5ff" /><ProcessObject /></Canvas></div><div className="process-detail-copy"><span className="process-label">{phases[activePhase].label}</span><h3>{phases[activePhase].title}</h3><p>{phases[activePhase].body}</p></div><div className="process-progress"><span style={{ width: `${((activePhase + 1) / phases.length) * 100}%` }} /></div><div className="process-output"><span>THE USEFUL OUTPUT</span><b>{phases[activePhase].output}</b><i>{phases[activePhase].id}</i></div></article>
         </div>
         <div className="process-foot"><span>WORKING TOGETHER, STEP BY STEP</span><a href="#contact">TALK THROUGH YOUR PROJECT <b>↗</b></a></div>
       </section>
@@ -632,11 +632,11 @@ function App() {
       </section>
 
       <section className="faq section-pad" id="faq">
-        <div className="section-top reveal"><div><div className="eyebrow"><span className="eyebrow-dash" /> GOOD QUESTIONS, CLEAR ANSWERS</div><h2>Before we<br /><span>get into it.</span></h2></div><div className="faq-aside"><p>Still thinking it through? That is a fine place to start.</p><a href="https://mail.google.com/mail/?view=cm&fs=1&to=ngrethesh%40gmail.com" target="_blank" rel="noreferrer" data-cursor="ASK US">Ask us directly <span>↗</span></a><div className="faq-gem" aria-hidden="true"><div className="faq-code-tile"><span>&lt;/&gt;</span><i /><i /><i /></div><b className="faq-orbit-dot" /></div></div></div>
+        <div className="section-top reveal"><div><div className="eyebrow"><span className="eyebrow-dash" /> GOOD QUESTIONS, CLEAR ANSWERS</div><h2>Before we<br /><span>get into it.</span></h2></div><div className="faq-aside"><p>Still thinking it through? That is a fine place to start.</p><a href="https://mail.google.com/mail/?view=cm&fs=1&to=codeincavedigitalsolutions%40gmail.com" target="_blank" rel="noreferrer" data-cursor="ASK US">Ask us directly <span>↗</span></a><div className="faq-gem" aria-hidden="true"><div className="faq-code-tile"><span>&lt;/&gt;</span><i /><i /><i /></div><b className="faq-orbit-dot" /></div></div></div>
         <div className="faq-list reveal">{faqs.map((faq, index) => { const isOpen = openFaq === index; return <article className={isOpen ? "faq-item is-open" : "faq-item"} key={faq.question}><button type="button" aria-expanded={isOpen} onClick={() => setOpenFaq(isOpen ? null : index)}><span className="faq-number">0{index + 1}</span><b>{faq.question}</b><i>{isOpen ? "−" : "+"}</i></button><div className="faq-answer" aria-hidden={!isOpen} inert={!isOpen}><p>{faq.answer}</p></div></article>; })}</div>
       </section>
       <div className="contact-marquee" aria-label="Ideas into reality, digital solutions built around your business"><div className="contact-marquee-track">{[0, 1, 2, 3].map((copy) => <div className="contact-marquee-group" aria-hidden={copy !== 0} key={copy}><span>IDEAS INTO REALITY</span><i>✳</i><span>WEB · SOFTWARE · AI</span><i>✳</i><span>BUILT AROUND YOUR BUSINESS</span><i>✳</i><span>CODEINCAVE DIGITAL SOLUTIONS</span><i>✳</i></div>)}</div></div>
-      <section className="contact" id="contact"><div className="contact-orb contact-orb-one" /><div className="contact-orb contact-orb-two" /><div className="contact-inner section-pad reveal"><div className="eyebrow"><span className="eyebrow-dash" /> LET'S BUILD WHAT'S NEXT</div><div className="contact-layout"><h2>Bring your idea.<br />We'll build the <span>future.</span></h2><div className="contact-copy"><p>From a stronger digital presence to software that streamlines your business, let's turn your next idea into something real.</p><span className="contact-email">PREFER EMAIL? <a href="https://mail.google.com/mail/?view=cm&fs=1&to=ngrethesh%40gmail.com" target="_blank" rel="noreferrer">NGRETHESH@GMAIL.COM</a></span></div></div>
+      <section className="contact" id="contact"><div className="contact-orb contact-orb-one" /><div className="contact-orb contact-orb-two" /><div className="contact-inner section-pad reveal"><div className="eyebrow"><span className="eyebrow-dash" /> LET'S BUILD WHAT'S NEXT</div><div className="contact-layout"><h2>Bring your idea.<br />We'll build the <span>future.</span></h2><div className="contact-copy"><p>From a stronger digital presence to software that streamlines your business, let's turn your next idea into something real.</p><span className="contact-email">PREFER EMAIL? <a href="https://mail.google.com/mail/?view=cm&fs=1&to=codeincavedigitalsolutions%40gmail.com" target="_blank" rel="noreferrer">CODEINCAVEDIGITALSOLUTIONS@GMAIL.COM</a></span></div></div>
         <form className="brief-form" onSubmit={handleBriefSubmit}>
           <div className="brief-form-heading"><div><span className="brief-kicker">PROJECT INQUIRY / 001</span><h3>Send us a brief</h3></div><p>Tell us about your project. We'll get back to you as soon as we can.</p></div>
           <div className="brief-fields">
@@ -651,10 +651,10 @@ function App() {
         </form>
         <footer className="contact-footer">
           <div className="footer-main">
-            <div className="footer-about"><a className="brand footer-brand" href="#top" aria-label="CodeInCave home"><span className="brand-symbol"><i /><i /><i /></span><span>code<span>in</span>cave<span className="brand-period">.</span></span></a><p>CodeInCave is a digital solutions company building thoughtful websites, custom software, AI-powered applications, and scalable products for real-world challenges.</p></div>
+            <div className="footer-about"><a className="brand footer-brand" href="#top" aria-label="CodeInCave home"><img className="brand-logo" src="/codeincave-wordmark.png" alt="" /></a><p>CodeInCave is a digital solutions company building thoughtful websites, custom software, AI-powered applications, and scalable products for real-world challenges.</p></div>
             <div className="footer-column"><h3>EXPLORE</h3><a href="#services">What we build <span>↗</span></a><a href="#process">Our process <span>↗</span></a><a href="#work">Product preview <span>↗</span></a><a href="#faq">FAQs <span>↗</span></a></div>
             <div className="footer-column"><h3>SOLUTIONS</h3><a href="#services">Custom websites <span>↗</span></a><a href="#services">Apps & AI <span>↗</span></a><a href="#services">Custom software <span>↗</span></a><a href="#services">Scalable digital products <span>↗</span></a></div>
-            <div className="footer-column"><h3>GET IN TOUCH</h3><a href="https://mail.google.com/mail/?view=cm&fs=1&to=ngrethesh%40gmail.com" target="_blank" rel="noreferrer">ngrethesh@gmail.com <span>↗</span></a><a href="#contact">Send a project brief <span>↗</span></a><span className="footer-location">TELANGANA, INDIA</span><span className="footer-location">DIGITAL SOLUTIONS</span></div>
+            <div className="footer-column"><h3>GET IN TOUCH</h3><a href="https://mail.google.com/mail/?view=cm&fs=1&to=codeincavedigitalsolutions%40gmail.com" target="_blank" rel="noreferrer">codeincavedigitalsolutions@gmail.com <span>↗</span></a><a href="#contact">Send a project brief <span>↗</span></a><span className="footer-location">TELANGANA, INDIA</span><span className="footer-location">DIGITAL SOLUTIONS</span></div>
           </div>
           <div className="footer-bottom"><span>© {new Date().getFullYear()} CODEINCAVE DIGITAL SOLUTIONS. ALL RIGHTS RESERVED.</span><div><a href="#faq">FAQs</a><a href="#top">BACK TO TOP ↑</a></div></div>
         </footer></div></section>
