@@ -440,6 +440,30 @@ function App() {
     }
   };
 
+  const handleWhatsAppBrief = (event) => {
+    const form = event.currentTarget.form;
+    if (!form?.reportValidity()) return;
+    const formData = new FormData(form);
+    if (formData.get("website")) return;
+
+    const message = [
+      "Hello CodeInCave team,",
+      "",
+      "I'd like to discuss a project with you. Here are my details:",
+      "",
+      `Name: ${formData.get("name")}`,
+      `Email: ${formData.get("email")}`,
+      `Company / project: ${formData.get("company") || "Not provided"}`,
+      `Budget range: ${selectedBudget}`,
+      "",
+      "Project brief:",
+      formData.get("project"),
+    ].join("\n");
+    const whatsappNumber = "917382486297";
+    const whatsappHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappHref, "_blank", "noopener,noreferrer");
+  };
+
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     document.documentElement.classList.add("js-ready");
@@ -646,7 +670,7 @@ function App() {
             <label className="brief-field brief-field-full"><span>Company / project name</span><input name="company" autoComplete="organization" placeholder="Your startup / company" /></label>
             <fieldset className="brief-budget brief-field-full"><legend>Budget range</legend><div>{["Under ₹50K", "₹50K – ₹1L", "₹1L – ₹3L", "₹3L+", "Let's discuss"].map((budget) => <button type="button" className={selectedBudget === budget ? "is-selected" : ""} aria-pressed={selectedBudget === budget} onClick={() => setSelectedBudget(budget)} key={budget}>{budget}</button>)}</div></fieldset>
             <label className="brief-field brief-field-full"><span>Tell us about your project <i>*</i></span><textarea name="project" rows="5" placeholder="What are you building? What problem needs to be solved? What's your timeline?" required /></label>
-            <div className="brief-submit brief-field-full"><button type="submit" className="brief-submit-button" data-cursor="PREPARE GMAIL DRAFT">Continue in Gmail <span>↗</span></button><p>Gmail will open with the details filled in. Review them and tap Send to submit your brief.</p>{briefStatus && <p className="brief-status" role="status">{briefStatus}</p>}{briefFallbackHref && <a className="brief-fallback" href={briefFallbackHref} target="_blank" rel="noreferrer">Gmail didn’t open? Open the draft here <span>↗</span></a>}</div>
+            <div className="brief-submit brief-field-full"><div className="brief-submit-options"><button type="submit" className="brief-submit-button" data-cursor="PREPARE GMAIL DRAFT">Continue in Gmail <span>↗</span></button><button type="button" className="brief-whatsapp-button" onClick={handleWhatsAppBrief} data-cursor="PREPARE WHATSAPP MESSAGE">Continue in WhatsApp <span>↗</span></button></div><p>Choose an option to open a prefilled message. Review the details and tap Send in Gmail or WhatsApp.</p>{briefStatus && <p className="brief-status" role="status">{briefStatus}</p>}{briefFallbackHref && <a className="brief-fallback" href={briefFallbackHref} target="_blank" rel="noreferrer">Gmail didn’t open? Open the draft here <span>↗</span></a>}</div>
           </div>
         </form>
         <footer className="contact-footer">

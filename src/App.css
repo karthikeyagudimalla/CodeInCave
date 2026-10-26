@@ -370,3 +370,9 @@
 .marquee-group span{transition:color .3s,-webkit-text-stroke-color .3s,filter .3s}
 .capability-marquee .marquee-lane-one .marquee-group span:hover,.capability-marquee .marquee-lane-one .marquee-group span.cursor-text-active{color:#f2ae3b!important;-webkit-text-fill-color:#f2ae3b!important;-webkit-text-stroke-color:#f2ae3b!important;filter:drop-shadow(0 0 18px #f2ae3b66)}
 .capability-marquee .marquee-lane-two .marquee-group span:hover,.capability-marquee .marquee-lane-two .marquee-group span.cursor-text-active{color:#86c5ff!important;-webkit-text-fill-color:#86c5ff!important;-webkit-text-stroke-color:#86c5ff!important;filter:drop-shadow(0 0 18px #86c5ff66)}
+.brief-submit-options{display:grid;width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.brief-whatsapp-button{display:flex;width:100%;min-height:52px;align-items:center;justify-content:center;gap:14px;border:1px solid #25d36666;border-radius:12px;background:linear-gradient(145deg,#13231e,#101923);color:#e7fff0;font:700 12px var(--display);cursor:pointer;transition:transform .2s,border-color .2s,background .2s,box-shadow .2s}
+.brief-whatsapp-button span{color:#25d366;font-size:17px;transition:transform .2s}
+.brief-whatsapp-button:hover{transform:translateY(-2px);border-color:#25d366;background:#183426;box-shadow:0 14px 36px #25d36620}
+.brief-whatsapp-button:hover span{transform:translate(3px,-3px)}
+@media(max-width:480px){.brief-submit-options{grid-template-columns:1fr;gap:9px}.brief-submit-button,.brief-whatsapp-button{min-height:48px}}
